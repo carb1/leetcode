@@ -1,21 +1,17 @@
-class Solution:
-    def longestPalindrome(self, s: str) -> str:
-        n = len(s)
-        dp = [[False] * n for _ in range(n)]
-        ans = ""
-        # 枚举子串的长度 l+1
-        for l in range(n):
-            # 枚举子串的起始位置 i，这样可以通过 k=i+l 得到子串的结束位置
-            for i in range(n):
-                k = i + l
-                if k >= len(s):
-                    break
-                if l == 0:
-                    dp[i][k] = True
-                elif l == 1:
-                    dp[i][k] = (s[i] == s[k])
-                else:
-                    dp[i][k] = (dp[i + 1][k - 1] and s[i] == s[k])
-                if dp[i][k] and l + 1 > len(ans):
-                    ans = s[i:k+1]
-        return ans
+import pandas as pd
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', 2000)
+table = pd.read_excel('./acc_run_time.xlsx')
+table['table'] = table['morning'].apply(lambda x: x.split(' ')[2])
+table['morning_time'] = table['morning'].apply(lambda x: x.split(' ')[3])
+table['afternoon_time'] = table['afternoon'].apply(lambda x: x.split(' ')[3])
+table = table[['table', 'morning_time', 'afternoon_time']]
+table['morning_time'] = pd.to_datetime(table['morning_time'], format='%H:%M:%S.%f')
+table['afternoon_time'] = pd.to_datetime(table['afternoon_time'], format='%H:%M:%S.%f')
+table['time_sub'] = table['afternoon_time'] - table['morning_time']
+
+run_date = table[table.index % 2 == 0]
+print(run_date)
+
+end_date = table[table.index % 2 == 1]
+print(end_date)
